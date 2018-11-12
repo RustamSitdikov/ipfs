@@ -3,6 +3,7 @@ package ru.mail.technotrack.ipfs
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.airbnb.lottie.LottieAnimationView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -22,13 +23,28 @@ class MainActivity : AppCompatActivity() {
     private var mDelayTime: Long = SECONDS_TO_DELAY
     private var mTimerIsRunning: Boolean = true
 
+    lateinit var progressAnimationView: LottieAnimationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Thread.sleep(5000)
+        progressAnimationView = findViewById(R.id.progress_view)
+    }
 
+    override fun onStart() {
+        super.onStart()
+
+        progressAnimationView.playAnimation()
+
+        Thread.sleep(5000)
         NavigationActivity.start(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        progressAnimationView.pauseAnimation()
     }
 
     private fun startTimer(time: Long) {

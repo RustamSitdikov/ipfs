@@ -19,7 +19,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "Action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
@@ -59,15 +59,6 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
             R.id.nav_manage -> {
 
             }
