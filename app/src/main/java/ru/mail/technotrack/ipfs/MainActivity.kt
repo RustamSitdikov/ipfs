@@ -5,10 +5,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import com.airbnb.lottie.LottieAnimationView
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     mTimerIsRunning = false
-                    NavigationActivity.start(this@MainActivity)
+                    BottomNavigationActivity.start(this@MainActivity)
                     finish()
                 }
             }.start()

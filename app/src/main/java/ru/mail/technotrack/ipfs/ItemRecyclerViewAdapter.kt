@@ -38,7 +38,7 @@ class ItemRecyclerViewAdapter(
         val item = mValues[position]
         holder.mIdView.text = item.id
         holder.mContentView.text = item.content
-        holder.mImageView.setImageResource(R.drawable.ic_ipfs)
+//        holder.mImageView.setImageResource(R.drawable.ic_ipfs)
 
         with(holder.mView) {
             tag = item
@@ -51,7 +51,7 @@ class ItemRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number
         val mContentView: TextView = mView.content
-        val mImageView: ImageView = mView.item_image
+//        val mImageView: ImageView = mView.item_image
 
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"
