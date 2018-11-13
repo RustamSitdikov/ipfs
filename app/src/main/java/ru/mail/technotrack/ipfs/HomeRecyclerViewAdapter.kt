@@ -1,10 +1,13 @@
 package ru.mail.technotrack.ipfs
 
+import android.content.Context
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 
 
 import ru.mail.technotrack.ipfs.HomeFragment.OnListFragmentInteractionListener
@@ -19,7 +22,8 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
  */
 class HomeRecyclerViewAdapter(
     private val mValues: List<DummyItem>,
-    private val mListener: OnListFragmentInteractionListener?
+    private val mListener: OnListFragmentInteractionListener?,
+    private val viewgroup: ViewGroup?
 ) : RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
@@ -30,6 +34,7 @@ class HomeRecyclerViewAdapter(
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)
+            viewgroup?.context?.startActivity(Intent(viewgroup.context, ScrollingActivity::class.java))
         }
     }
 

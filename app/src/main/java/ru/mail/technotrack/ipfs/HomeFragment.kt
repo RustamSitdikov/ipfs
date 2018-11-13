@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = HomeRecyclerViewAdapter(DummyContent.ITEMS, listener)
+                adapter = HomeRecyclerViewAdapter(DummyContent.ITEMS, listener, container)
             }
         }
         return view
