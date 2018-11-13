@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
+
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -14,14 +16,22 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    lateinit var viewPager: ViewPager
+    lateinit var tabLayout: TabLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        val viewPager = findViewById<ViewPager>(R.id.viewpager_dashboard)
-        if (viewPager != null) {
-            val adapter = DashboardViewPagerAdapter(supportFragmentManager)
-            viewPager.adapter = adapter
-        }
+        viewPager = findViewById(R.id.viewpager_dashboard)
+        tabLayout = findViewById(R.id.tablayout_dashboard)
+
+        val adapter = DashboardViewPagerAdapter(supportFragmentManager)
+        adapter.addFragment(DashboardTabFragment(), "Tab 1")
+        adapter.addFragment(DashboardTabFragment(), "Tab 2")
+        adapter.addFragment(DashboardTabFragment(), "Tab 3")
+
+        viewPager.adapter = adapter
+        tabLayout.setupWithViewPager(viewPager)
     }
 }

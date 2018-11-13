@@ -2,30 +2,28 @@ package ru.mail.technotrack.ipfs
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 
-class DashboardViewPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    private val COUNT = 3
+class DashboardViewPagerAdapter internal constructor(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val mFragmentList: MutableList<Fragment> = ArrayList()
+    private val mFragmentTitleList: MutableList<String> = ArrayList()
 
-    override fun getItem(position: Int): Fragment? {
-        var fragment: Fragment? = null
-        when (position) {
-            0 -> fragment = DashboardTabFragment()
-            1 -> fragment = DashboardTabFragment()
-            2 -> fragment = DashboardTabFragment()
-        }
-
-        return fragment
+    override fun getItem(position: Int): Fragment {
+        return mFragmentList.get(position)
     }
 
-    override fun getCount(): Int {
-        return COUNT
+    fun addFragment(fragment: Fragment, title: String) {
+        mFragmentList.add(fragment)
+        mFragmentTitleList.add(title)
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return "Tab " + (position + 1)
+        return mFragmentTitleList.get(position)
     }
 
+    override fun getCount(): Int {
+        return mFragmentList.size
+    }
 }
 
