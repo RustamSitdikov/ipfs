@@ -27,6 +27,7 @@
             android:layout_marginBottom="20dp"
             android:layout_gravity="center"
             android:foregroundGravity="bottom"
+            android:background="@android:color/white"
 
             app:lottie_fileName="lottie_green_monster.json"
             app:lottie_loop="true"

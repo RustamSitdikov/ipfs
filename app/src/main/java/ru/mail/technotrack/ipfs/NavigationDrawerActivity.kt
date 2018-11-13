@@ -24,7 +24,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_drawer)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_navigation_drawer)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Action", Snackbar.LENGTH_LONG)
@@ -32,17 +32,17 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         }
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, layout_navigation_drawer, toolbar_navigation_drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
-        drawer_layout.addDrawerListener(toggle)
+        layout_navigation_drawer.addDrawerListener(toggle)
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (layout_navigation_drawer.isDrawerOpen(GravityCompat.START)) {
+            layout_navigation_drawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -78,7 +78,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
             }
         }
 
-        drawer_layout.closeDrawer(GravityCompat.START)
+        layout_navigation_drawer.closeDrawer(GravityCompat.START)
         return true
     }
 }
