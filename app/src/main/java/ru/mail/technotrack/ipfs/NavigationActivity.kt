@@ -18,7 +18,9 @@ class NavigationActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                message.setText(R.string.title_home)
+                val manager = supportFragmentManager
+                manager.beginTransaction().replace(R.id.home_list, HomeFragment()).commit()
+
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {

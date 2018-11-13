@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     mTimerIsRunning = false
-                    DashboardActivity.start(this@MainActivity)
+                    NavigationActivity.start(this@MainActivity)
                     finish()
                 }
             }.start()
