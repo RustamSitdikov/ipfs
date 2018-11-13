@@ -19,12 +19,11 @@ class NavigationActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_home -> {
                 val manager = supportFragmentManager
-                manager.beginTransaction().replace(R.id.home_list, HomeFragment()).commit()
+                manager.beginTransaction().replace(R.id.bottom_navigation_content, HomeFragment()).commit()
 
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                message.setText(R.string.title_dashboard)
                 return@OnNavigationItemSelectedListener true
             }
         }
