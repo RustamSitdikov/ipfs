@@ -8,12 +8,8 @@
         android:layout_height="match_parent"
         tools:context=".NavigationActivity">
 
-    <FrameLayout
-            android:id="@+id/bottom_navigation_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-    </FrameLayout>
+    <include layout="@layout/content_bottom_navigation_view"
+             android:id="@+id/content_bottom_navigation_view"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navigation"
