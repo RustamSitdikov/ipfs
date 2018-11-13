@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     mTimerIsRunning = false
-                    BottomNavigationActivity.start(this@MainActivity)
+                    NavigationDrawerActivity.start(this@MainActivity)
                     finish()
                 }
             }.start()

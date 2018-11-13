@@ -38,6 +38,8 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        this.supportFragmentManager.beginTransaction().replace(R.id.content_bottom_navigation_view, HomeFragment()).commit()
     }
 
     override fun onBackPressed() {

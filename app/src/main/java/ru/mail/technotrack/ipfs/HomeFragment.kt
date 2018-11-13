@@ -10,13 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import ru.mail.technotrack.ipfs.item.ItemContent
-import ru.mail.technotrack.ipfs.item.ItemContent.Item
+import ru.mail.technotrack.ipfs.dummy.DummyContent
+import ru.mail.technotrack.ipfs.dummy.DummyContent.DummyItem
 
-
+/**
+ * A fragment representing a list of Items.
+ * Activities containing this fragment MUST implement the
+ * [HomeFragment.OnListFragmentInteractionListener] interface.
+ */
 class HomeFragment : Fragment() {
 
-    private var columnCount = 1
+    // TODO: Customize parameters
+    private var columnCount = 2
 
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -34,13 +39,14 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home_list, container, false)
 
+        // Set the adapter
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = when {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = ItemRecyclerViewAdapter(ItemContent.ITEMS, listener)
+                adapter = HomeRecyclerViewAdapter(DummyContent.ITEMS, listener)
             }
         }
         return view
@@ -48,11 +54,11 @@ class HomeFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }
+//        if (context is OnListFragmentInteractionListener) {
+//            listener = context
+//        } else {
+//            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+//        }
     }
 
     override fun onDetach() {
@@ -60,14 +66,28 @@ class HomeFragment : Fragment() {
         listener = null
     }
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     *
+     *
+     * See the Android Training lesson
+     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
+     * for more information.
+     */
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Item?)
+        // TODO: Update argument type and name
+        fun onListFragmentInteraction(item: DummyItem?)
     }
 
     companion object {
 
+        // TODO: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"
 
+        // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
             HomeFragment().apply {
