@@ -1,14 +1,22 @@
 package ru.mail.technotrack.ipfs
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -33,8 +41,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         setSupportActionBar(toolbar_navigation_drawer)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            showPopupSettingsMenu(view)
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -54,6 +61,47 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager))
 
 //        this.supportFragmentManager.beginTransaction().replace(R.id.content_bottom_navigation_view, HomeFragment()).commit()
+    }
+
+    private val MY_PERMISSIONS_REQUEST_CAMERA = 1
+
+    private fun showPopupSettingsMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.inflate(R.menu.menu_download)
+
+        popupMenu.setOnMenuItemClickListener {
+            when {
+                it.itemId == R.id.item_camera -> {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                            this,
+                            arrayOf(Manifest.permission.CAMERA),
+                            MY_PERMISSIONS_REQUEST_CAMERA)
+                        true
+                    } else {
+                        dispatchTakePictureIntent()
+                        true
+                    }
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    val REQUEST_IMAGE_CAPTURE = 1
+
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
     }
 
     override fun onBackPressed() {
