@@ -4,12 +4,9 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -17,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -63,7 +61,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
 //        this.supportFragmentManager.beginTransaction().replace(R.id.content_bottom_navigation_view, HomeFragment()).commit()
     }
 
-    private val MY_PERMISSIONS_REQUEST_CAMERA = 1
+    private val REQUEST_CAMERA = 1
 
     private fun showPopupSettingsMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
@@ -78,7 +76,7 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
                         ActivityCompat.requestPermissions(
                             this,
                             arrayOf(Manifest.permission.CAMERA),
-                            MY_PERMISSIONS_REQUEST_CAMERA)
+                            REQUEST_CAMERA)
                         true
                     } else {
                         dispatchTakePictureIntent()
@@ -101,6 +99,13 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
             takePictureIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CAMERA && grantResults[0] == PERMISSION_GRANTED) {
+            dispatchTakePictureIntent()
         }
     }
 
