@@ -22,6 +22,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
+import ru.mail.technotrack.ipfs.download.fragment.DownloadMenuFragment
 
 class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,7 +40,8 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         setSupportActionBar(toolbar_navigation_drawer)
 
         fab.setOnClickListener { view ->
-            showPopupSettingsMenu(view)
+            val downloadMenuFragment = DownloadMenuFragment()
+            downloadMenuFragment.show(supportFragmentManager, downloadMenuFragment.tag)
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -59,54 +61,6 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(view_pager))
 
 //        this.supportFragmentManager.beginTransaction().replace(R.id.content_bottom_navigation_view, HomeFragment()).commit()
-    }
-
-    private val REQUEST_CAMERA = 1
-
-    private fun showPopupSettingsMenu(view: View) {
-        val popupMenu = PopupMenu(this, view)
-        popupMenu.inflate(R.menu.menu_download)
-
-        popupMenu.setOnMenuItemClickListener {
-            when {
-                it.itemId == R.id.item_camera -> {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(
-                            this,
-                            arrayOf(Manifest.permission.CAMERA),
-                            REQUEST_CAMERA)
-                        true
-                    } else {
-                        dispatchTakePictureIntent()
-                        true
-                    }
-                }
-                else -> {
-                    false
-                }
-            }
-        }
-
-        popupMenu.show()
-    }
-
-    val REQUEST_IMAGE_CAPTURE = 1
-
-    private fun dispatchTakePictureIntent() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CAMERA && grantResults[0] == PERMISSION_GRANTED) {
-            dispatchTakePictureIntent()
-        }
     }
 
     override fun onBackPressed() {
