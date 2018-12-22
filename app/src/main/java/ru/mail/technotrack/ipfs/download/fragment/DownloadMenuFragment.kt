@@ -120,20 +120,9 @@ class DownloadMenuFragment : BottomSheetDialogFragment() {
     }
 
     private fun dispatchSelectFileFromStorageIntent() {
-//        val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-//        getIntent.type = "image/*"
-//
-//        val pickIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//        pickIntent.type = "image/*"
-//
-//        val chooserIntent = Intent.createChooser(getIntent, "Select Image")
-//        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-//
-//        startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE)
-
-//        Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         Intent(Intent.ACTION_GET_CONTENT)
             .also {storageIntent ->
+                storageIntent.type = "file/*"
                 storageIntent.resolveActivity(context!!.packageManager)?.also {
                     startActivityForResult(storageIntent, REQUEST_PICK_FILE)
                 }
@@ -166,7 +155,11 @@ class DownloadMenuFragment : BottomSheetDialogFragment() {
         }
 
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK) {
+//            do something
+        }
 
+        if (requestCode == REQUEST_PICK_FILE && resultCode == RESULT_OK) {
+//            do something
         }
 
     }
