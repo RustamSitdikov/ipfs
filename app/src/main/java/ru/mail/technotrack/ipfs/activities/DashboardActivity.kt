@@ -1,4 +1,4 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.activities
 
 import androidx.appcompat.app.AppCompatActivity
 
@@ -15,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
+import ru.mail.technotrack.ipfs.R
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -61,7 +62,9 @@ class DashboardActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a DashboardTabFragment (defined as a static inner class below).
-            return DashboardTabFragment.newInstance(position + 1)
+            return DashboardTabFragment.newInstance(
+                position + 1
+            )
         }
 
         override fun getCount(): Int {
@@ -77,7 +80,10 @@ class DashboardActivity : AppCompatActivity() {
             savedInstanceState: Bundle?
         ): View? {
             val rootView = inflater.inflate(R.layout.fragment_dashboard, container, false)
-            rootView.section_label.text = getString(R.string.section_format, arguments?.getInt(ARG_SECTION_NUMBER))
+            rootView.section_label.text = getString(
+                R.string.section_format, arguments?.getInt(
+                    ARG_SECTION_NUMBER
+                ))
             return rootView
         }
 
