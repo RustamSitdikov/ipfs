@@ -107,8 +107,8 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         override fun getItem(position: Int): Fragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a DashboardTabFragment (defined as a static inner class below).
-            if (position == 0) return HomeFragment()
-            else return DashboardTabFragment.newInstance(
+            return if (position == 0) HomeFragment()
+            else DashboardTabFragment.newInstance(
                 position + 1
             )
         }

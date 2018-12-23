@@ -78,13 +78,14 @@ class HomeFragment : Fragment() {
     private fun loadDataSet() {
         RetrofitClient.create().getFilesInfo().enqueue(object : Callback,
             retrofit2.Callback<FileInfoList> {
+            // TODO add exception catch
             override fun onFailure(call: Call<FileInfoList>, t: Throwable) {
                 println("LOADING FAILED")
             }
 
             override fun onResponse(call: Call<FileInfoList>, response: Response<FileInfoList>?) {
                 if (response != null) {
-                    filesInfoList.addAll(response.body()!!.entries!!)
+                    response.body()?.entries?.let { filesInfoList.addAll(it) }
                     viewAdapter.notifyDataSetChanged()
                 }
             }
