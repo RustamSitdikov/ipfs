@@ -1,9 +1,10 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.activities
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_scrolling.*
+import ru.mail.technotrack.ipfs.R
 
 class ScrollingActivity : AppCompatActivity() {
 
