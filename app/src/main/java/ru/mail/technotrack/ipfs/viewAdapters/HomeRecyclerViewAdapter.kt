@@ -1,6 +1,7 @@
 package ru.mail.technotrack.ipfs.viewAdapters
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -35,8 +36,12 @@ class HomeRecyclerViewAdapter(
             val item = v.tag as FileInfo
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
+            val bundle = Bundle()
+            val intent = Intent(viewgroup?.context, ScrollingActivity::class.java)
+            bundle.putSerializable("item", item)
+            intent.putExtras(bundle)
             mListener?.onListFragmentInteraction(item)
-            viewgroup?.context?.startActivity(Intent(viewgroup.context, ScrollingActivity::class.java))
+            viewgroup?.context?.startActivity(intent)
         }
     }
 

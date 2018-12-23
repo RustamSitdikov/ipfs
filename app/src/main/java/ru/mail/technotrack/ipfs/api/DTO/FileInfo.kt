@@ -2,8 +2,9 @@ package ru.mail.technotrack.ipfs.api.DTO
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class FileInfo {
+class FileInfo : Serializable {
     @SerializedName("Name")
     @Expose
     var name: String? = null
