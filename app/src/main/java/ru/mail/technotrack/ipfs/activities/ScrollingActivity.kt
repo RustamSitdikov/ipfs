@@ -18,11 +18,13 @@ class ScrollingActivity : AppCompatActivity() {
         val item = intent.extras.getSerializable("item") as FileInfo
         setContentView(R.layout.activity_scrolling)
 
-        name = findViewById(R.id.item_number)
+        name = findViewById(R.id.name)
         name.setText(item.name)
 
-        type = findViewById(R.id.content)
+        type = findViewById(R.id.type)
         type.setText(item.type?.let { getTypeFile(it) })
+
+        title = item.name
 
         setSupportActionBar(toolbar)
         fab.setOnClickListener { view ->

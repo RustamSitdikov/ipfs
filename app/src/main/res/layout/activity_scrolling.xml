@@ -60,7 +60,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:layout_width="76dp"/>
                 <EditText
-                        android:id="@+id/item_number"
+                        android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
@@ -79,7 +79,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:layout_width="76dp"/>
                 <EditText
-                        android:id="@+id/content"
+                        android:id="@+id/type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
