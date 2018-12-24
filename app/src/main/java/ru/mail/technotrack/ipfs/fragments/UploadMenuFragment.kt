@@ -1,4 +1,4 @@
-package ru.mail.technotrack.ipfs.download.fragment
+package ru.mail.technotrack.ipfs.fragments
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
@@ -13,14 +13,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.fragment_download_menu.*
+import kotlinx.android.synthetic.main.fragment_upload_menu.*
 
 import ru.mail.technotrack.ipfs.R
 import android.graphics.Bitmap
 import android.widget.ImageView
 
 
-class DownloadMenuFragment : BottomSheetDialogFragment() {
+class UploadMenuFragment : BottomSheetDialogFragment() {
 
     private val REQUEST_CAMERA = 1
     private val REQUEST_IMAGE_CAPTURE = 2
@@ -30,7 +30,7 @@ class DownloadMenuFragment : BottomSheetDialogFragment() {
     private val REQUEST_PICK_FILE = 6
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_download_menu, container, false)
+        return inflater.inflate(R.layout.fragment_upload_menu, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,7 +122,7 @@ class DownloadMenuFragment : BottomSheetDialogFragment() {
     private fun dispatchSelectFileFromStorageIntent() {
         Intent(Intent.ACTION_GET_CONTENT)
             .also {storageIntent ->
-                storageIntent.type = "file/*"
+                storageIntent.type = "*/*"
                 storageIntent.resolveActivity(context!!.packageManager)?.also {
                     startActivityForResult(storageIntent, REQUEST_PICK_FILE)
                 }

@@ -1,20 +1,13 @@
 package ru.mail.technotrack.ipfs
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -22,7 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
-import ru.mail.technotrack.ipfs.download.fragment.DownloadMenuFragment
+import ru.mail.technotrack.ipfs.fragments.UploadMenuFragment
 
 class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,9 +32,9 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         setContentView(R.layout.activity_navigation_drawer)
         setSupportActionBar(toolbar_navigation_drawer)
 
-        fab.setOnClickListener { view ->
-            val downloadMenuFragment = DownloadMenuFragment()
-            downloadMenuFragment.show(supportFragmentManager, downloadMenuFragment.tag)
+        fab.setOnClickListener {
+            val uploadMenuFragment = UploadMenuFragment()
+            uploadMenuFragment.show(supportFragmentManager, uploadMenuFragment.tag)
         }
 
         val toggle = ActionBarDrawerToggle(
