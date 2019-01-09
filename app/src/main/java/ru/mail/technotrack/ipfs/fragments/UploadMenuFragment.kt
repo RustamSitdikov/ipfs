@@ -40,13 +40,13 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
             when {
                 menuItem.itemId == R.id.item_camera -> {
                     if (ContextCompat.checkSelfPermission(
-                            context!!,
+                            this.requireContext(),
                             Manifest.permission.CAMERA
                         )
                         != PackageManager.PERMISSION_GRANTED
                     ) {
                         ActivityCompat.requestPermissions(
-                            activity!!,
+                            this.requireActivity(),
                             arrayOf(Manifest.permission.CAMERA),
                             REQUEST_CAMERA
                         )
@@ -60,12 +60,12 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
                 }
                 menuItem.itemId == R.id.item_gallery -> {
                     if (ContextCompat.checkSelfPermission(
-                            context!!,
+                            this.requireContext(),
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         ActivityCompat.requestPermissions(
-                            activity!!,
+                            this.requireActivity(),
                             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                             REQUEST_READ_EXTERNAL_FOR_GALLERY)
                         dismiss()
@@ -78,12 +78,12 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
                 }
                 menuItem.itemId == R.id.item_storage -> {
                     if (ContextCompat.checkSelfPermission(
-                            context!!,
+                            this.requireContext(),
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         ActivityCompat.requestPermissions(
-                            activity!!,
+                            this.requireActivity(),
                             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                             REQUEST_READ_EXTERNAL_FOR_STORAGE)
                         dismiss()
@@ -104,7 +104,7 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
 
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(context!!.packageManager)?.also {
+            takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
             }
         }
@@ -113,7 +113,7 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
     private fun dispatchSelectPictureFromGalleryIntent() {
         Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             .also {galleryIntent ->
-                galleryIntent.resolveActivity(context!!.packageManager)?.also {
+                galleryIntent.resolveActivity(requireContext().packageManager)?.also {
                     startActivityForResult(galleryIntent, REQUEST_PICK_IMAGE)
                 }
             }
@@ -123,7 +123,7 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
         Intent(Intent.ACTION_GET_CONTENT)
             .also {storageIntent ->
                 storageIntent.type = "*/*"
-                storageIntent.resolveActivity(context!!.packageManager)?.also {
+                storageIntent.resolveActivity(requireContext().packageManager)?.also {
                     startActivityForResult(storageIntent, REQUEST_PICK_FILE)
                 }
             }
