@@ -19,6 +19,15 @@ import ru.mail.technotrack.ipfs.api.DTO.FileInfo
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 import java.io.File
 import java.io.FileOutputStream
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Retrofit
+import com.google.gson.GsonBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import ru.mail.technotrack.ipfs.api.RetrofitClient
+import ru.mail.technotrack.ipfs.utils.BASE_API_URL
+
 
 class ScrollingActivity : AppCompatActivity() {
 
@@ -101,12 +110,24 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
     private fun downloadFile(fileName: String): String {
-//        TODO: get byteArray from ipfs
-        var fileByteArray = ByteArray(1)
-        return saveDownloadedFile(fileName, fileByteArray)
+
+        val retrofitClientApi = RetrofitClient.create()
+        val call = retrofitClientApi.getFileContent(fileName)
+        var fileLocation: String = ""
+        call.enqueue {
+
+            onResponse = {
+                fileLocation = saveDownloadedFile(fileName, it.message())
+            }
+
+            onFailure = {
+                
+            }
+        }
+        return fileLocation
     }
 
-    private fun saveDownloadedFile(fileName: String, fileByteArray: ByteArray): String {
+    private fun saveDownloadedFile(fileName: String, fileString: String): String {
         createIPFSFolder()
         val fileLocation = "$ipfsFolderLocation/$fileName"
         var file = File(fileLocation)
@@ -114,7 +135,7 @@ class ScrollingActivity : AppCompatActivity() {
             file.delete()
         try {
             val out = FileOutputStream(file)
-            out.write(fileByteArray)
+            out.write(fileString.toByteArray())
             out.flush()
             out.close()
         } catch (e: Exception) {
@@ -123,4 +144,26 @@ class ScrollingActivity : AppCompatActivity() {
 
         return fileLocation
     }
+
+    private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
+        val callBackKt = CallBackKt<T>()
+        callback.invoke(callBackKt)
+        this.enqueue(callBackKt)
+    }
+
+    class CallBackKt<T>: Callback<T> {
+
+        var onResponse: ((Response<T>) -> Unit)? = null
+        var onFailure: ((t: Throwable?) -> Unit)? = null
+
+        override fun onFailure(call: Call<T>, t: Throwable) {
+            onFailure?.invoke(t)
+        }
+
+        override fun onResponse(call: Call<T>, response: Response<T>) {
+            onResponse?.invoke(response)
+        }
+
+    }
+
 }

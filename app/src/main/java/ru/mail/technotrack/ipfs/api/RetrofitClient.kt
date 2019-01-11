@@ -28,4 +28,7 @@ interface RetrofitClient {
 
     @GET("")
     fun getFileInfo(@Query("arg") filesPath: String="/"): Call<FileInfo>
+
+    @GET("/api/v0/files/read")
+    fun getFileContent(@Query("arg") filesPath: String="/"): Call<String>
 }
