@@ -117,4 +117,7 @@
     <string name="camera">camera</string>
     <string name="storage">storage</string>
     <string name="gallery">gallery</string>
+    <string name="file_name">file_name</string>
+    <string name="download">download</string>
+    <string name="open">open</string>
 </resources>
