@@ -110,13 +110,8 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
     private fun downloadFile(fileName: String): String {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_API_URL) //Базовая часть адреса
-            .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
-            .build()
 
-        val retrofitClientApi = retrofit.create(RetrofitClient::class.java)
-
+        val retrofitClientApi = RetrofitClient.create()
         val call = retrofitClientApi.getFileContent(fileName)
         var fileLocation: String = ""
         call.enqueue {
