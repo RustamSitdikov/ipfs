@@ -33,7 +33,6 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_drawer)
         setSupportActionBar(toolbar_navigation_drawer)
-
         fab.setOnClickListener {
             val uploadMenuFragment = UploadMenuFragment()
             uploadMenuFragment.show(supportFragmentManager, uploadMenuFragment.tag)

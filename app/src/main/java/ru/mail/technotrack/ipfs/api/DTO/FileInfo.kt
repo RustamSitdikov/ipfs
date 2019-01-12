@@ -4,18 +4,18 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class FileInfo : Serializable {
+class FileInfo(name: String, type: Int, size: Long, hash: String) : Serializable {
     @SerializedName("Name")
     @Expose
-    var name: String? = null
+    var name: String? = name
 
     @SerializedName("Type")
     @Expose
-    var type: Int? = null
+    var type: Int? = type
 
     @SerializedName("Size")
     @Expose
-    var size: Long? = null
+    var size: Long? = size
 
     @SerializedName("Hash")
     @Expose

@@ -15,7 +15,7 @@ import ru.mail.technotrack.ipfs.dummy.DummyContent.DummyItem
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.activities.ScrollingActivity
-import ru.mail.technotrack.ipfs.api.DTO.FileInfo
+import ru.mail.technotrack.ipfs.database.FileInfo
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 
 /**

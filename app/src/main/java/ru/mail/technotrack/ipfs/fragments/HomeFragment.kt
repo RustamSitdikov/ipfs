@@ -1,6 +1,5 @@
 package ru.mail.technotrack.ipfs.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,28 +9,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import retrofit2.Call
-import retrofit2.Response
-
 import ru.mail.technotrack.ipfs.viewAdapters.HomeRecyclerViewAdapter
 import ru.mail.technotrack.ipfs.R
-import ru.mail.technotrack.ipfs.api.DTO.FileInfo
-import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
-import ru.mail.technotrack.ipfs.api.RetrofitClient
+import ru.mail.technotrack.ipfs.api.DTO.FileInfo as FileInfoDto
+import ru.mail.technotrack.ipfs.api.*
+import ru.mail.technotrack.ipfs.database.FileInfo as FileInfoEntity
+import ru.mail.technotrack.ipfs.database.Model
+import ru.mail.technotrack.ipfs.database.converters.fromDtoToModelFileInfo
 
-import javax.security.auth.callback.Callback
-
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [HomeFragment.OnListFragmentInteractionListener] interface.
- */
 class HomeFragment : Fragment() {
 
     // TODO: Customize parameters
     private var columnCount = 2
     private var listener: OnListFragmentInteractionListener? = null
-    private var filesInfoList = ArrayList<FileInfo>()
+    private var filesInfoList = ArrayList<FileInfoEntity>()
+
+    private var dataLoaded = false
+    private val DATA_LOADED = "dataLoaded"
+    private lateinit var model: Model
+
     private lateinit var viewAdapter: HomeRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,13 +57,25 @@ class HomeFragment : Fragment() {
                 }
                 adapter = viewAdapter
             }
-            loadDataSet()
         }
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dataLoaded = savedInstanceState?.getBoolean(DATA_LOADED) ?: false
+        model = Model(this.context!!)
+        if (!dataLoaded) {
+            model.deleteFilesByPath("/")
+            loadDataSet()
+        } else {
+            filesInfoList.addAll(model.getFiles())
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(DATA_LOADED, dataLoaded)
     }
 
     override fun onDetach() {
@@ -75,21 +83,19 @@ class HomeFragment : Fragment() {
         listener = null
     }
 
-    private fun loadDataSet() {
-        RetrofitClient.create().getFilesInfo().enqueue(object : Callback,
-            retrofit2.Callback<FileInfoList> {
-            // TODO add exception catch
-            override fun onFailure(call: Call<FileInfoList>, t: Throwable) {
-                println("LOADING FAILED")
-            }
-
-            override fun onResponse(call: Call<FileInfoList>, response: Response<FileInfoList>?) {
-                if (response != null) {
-                    response.body()?.entries?.let { filesInfoList.addAll(it) }
-                    viewAdapter.notifyDataSetChanged()
+    /**
+     * Download data via ApiExecutor method
+     */
+    private fun loadDataSet(path: String = "/") {
+        getFilesInfo({ it, path ->
+            run {
+                it.entries?.let {
+                    model.updateFiles(path, fromDtoToModelFileInfo(it, path))
+                    filesInfoList.addAll(model.getFiles())
                 }
+                viewAdapter.notifyDataSetChanged()
             }
-        })
+        }, path)
     }
 
     /**
@@ -105,7 +111,7 @@ class HomeFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: FileInfo?)
+        fun onListFragmentInteraction(item: FileInfoEntity?)
     }
 
     companion object {

@@ -15,18 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import ru.mail.technotrack.ipfs.R
-import ru.mail.technotrack.ipfs.api.DTO.FileInfo
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 import java.io.File
 import java.io.FileOutputStream
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Retrofit
-import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.mail.technotrack.ipfs.api.RetrofitClient
-import ru.mail.technotrack.ipfs.utils.BASE_API_URL
+import ru.mail.technotrack.ipfs.database.FileInfo
 
 
 class ScrollingActivity : AppCompatActivity() {
