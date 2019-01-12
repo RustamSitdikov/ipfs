@@ -30,7 +30,7 @@ interface ValuesDao {
     fun getFileByName(name: String): List<FileInfo>
 
     @Query("SELECT * FROM files")
-    fun getFiles(): List<FileInfo>
+    fun getAllFiles(): List<FileInfo>
 
     @Query("SELECT * FROM files WHERE path == :path")
     fun getFilesByPath(path: String): List<FileInfo>

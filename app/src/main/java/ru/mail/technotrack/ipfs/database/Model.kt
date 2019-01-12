@@ -7,15 +7,19 @@ class Model(context: Context) {
     private val room = ValuesDatabase.getAppDataBase(context)
 
     fun size(): Long {
-        return getFiles().size.toLong()
+        return getAllFiles().size.toLong()
     }
 
     fun editValue(file: FileInfo) {
         room?.valuesDao()?.updateFile(file)
     }
 
-    fun getFiles(): List<FileInfo> {
-        return room?.valuesDao()?.getFiles() ?: emptyList()
+    fun getFiles(path: String): List<FileInfo> {
+        return room?.valuesDao()?.getFilesByPath(path) ?: emptyList()
+    }
+
+    fun getAllFiles(): List<FileInfo> {
+        return room?.valuesDao()?.getAllFiles() ?: emptyList()
     }
 
     fun deleteFilesByPath(path: String) {
