@@ -20,11 +20,9 @@ import ru.mail.technotrack.ipfs.database.converters.fromDtoToModelFileInfo
 
 class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    // TODO: Customize parameters
     private var columnCount = 2
     private var listener: OnListFragmentInteractionListener? = null
     private var filesInfoList = ArrayList<FileInfoEntity>()
-    private lateinit var swipeContainer: SwipeRefreshLayout
 
     private var dataLoaded = false
     private val DATA_LOADED = "dataLoaded"
@@ -40,7 +38,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        swipeContainer = inflater.inflate(R.layout.fragment_home_list, container, false) as SwipeRefreshLayout
+        val swipeContainer = inflater.inflate(R.layout.fragment_home_list, container, false) as SwipeRefreshLayout
         val view = swipeContainer.findViewById<RecyclerView>(R.id.list)
 
         viewAdapter = HomeRecyclerViewAdapter(
@@ -105,7 +103,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     filesInfoList.addAll(model.getFiles())
                 }
                 viewAdapter.notifyDataSetChanged()
-                swipeContainer.isRefreshing = false
+                (this.view as SwipeRefreshLayout).isRefreshing = false
             }
         }, path)
     }

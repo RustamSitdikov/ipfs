@@ -27,7 +27,7 @@ import ru.mail.technotrack.ipfs.database.FileInfo
 
 class ScrollingActivity : AppCompatActivity() {
 
-    private val REQUEST_WRITE_EXTERNAL_FOR_STORAGE  = 1
+    private val REQUEST_WRITE_EXTERNAL_FOR_STORAGE = 1
 
     private lateinit var name: EditText
     private lateinit var type: EditText
@@ -117,7 +117,7 @@ class ScrollingActivity : AppCompatActivity() {
             }
 
             onFailure = {
-                
+
             }
         }
         return fileLocation
@@ -147,7 +147,7 @@ class ScrollingActivity : AppCompatActivity() {
         this.enqueue(callBackKt)
     }
 
-    class CallBackKt<T>: Callback<T> {
+    class CallBackKt<T> : Callback<T> {
 
         var onResponse: ((Response<T>) -> Unit)? = null
         var onFailure: ((t: Throwable?) -> Unit)? = null
@@ -159,7 +159,5 @@ class ScrollingActivity : AppCompatActivity() {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             onResponse?.invoke(response)
         }
-
     }
-
 }
