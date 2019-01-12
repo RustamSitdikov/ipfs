@@ -1,3 +1,4 @@
+//noinspection GradleCompatible
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -23,16 +24,21 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$ktx_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.recyclerview:recyclerview:$jetVersion"
     implementation "androidx.cardview:cardview:$jetVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    //noinspection GradleDependency
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    //noinspection GradleDependency
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
+    //noinspection GradleDependency
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
+    //noinspection GradleDependency
     implementation "android.arch.work:work-runtime-ktx:$work_version"
 
     implementation "com.google.android.material:material:$material_version"
@@ -56,17 +62,16 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
 
     implementation "androidx.room:room-rxjava2:$room_version"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    implementation 'com.google.android.material:material:1.0.0-alpha1'
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-alpha1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     implementation "com.google.dagger:dagger:$dagger_version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
 
     testImplementation "junit:junit:$junit_version"
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

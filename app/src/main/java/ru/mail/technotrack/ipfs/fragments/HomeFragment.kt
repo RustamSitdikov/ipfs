@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import ru.mail.technotrack.ipfs.viewAdapters.HomeRecyclerViewAdapter
 import ru.mail.technotrack.ipfs.R
@@ -17,12 +18,13 @@ import ru.mail.technotrack.ipfs.database.FileInfo as FileInfoEntity
 import ru.mail.technotrack.ipfs.database.Model
 import ru.mail.technotrack.ipfs.database.converters.fromDtoToModelFileInfo
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     // TODO: Customize parameters
     private var columnCount = 2
     private var listener: OnListFragmentInteractionListener? = null
     private var filesInfoList = ArrayList<FileInfoEntity>()
+    private lateinit var swipeContainer: SwipeRefreshLayout
 
     private var dataLoaded = false
     private val DATA_LOADED = "dataLoaded"
@@ -32,33 +34,39 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_home_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        swipeContainer = inflater.inflate(R.layout.fragment_home_list, container, false) as SwipeRefreshLayout
+        val view = swipeContainer.findViewById<RecyclerView>(R.id.list)
+
         viewAdapter = HomeRecyclerViewAdapter(
             filesInfoList,
             listener,
             container
         )
 
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = viewAdapter
+        with(view) {
+            this?.layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
             }
+            this?.adapter = viewAdapter
         }
-        return view
+
+        return swipeContainer
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as SwipeRefreshLayout).setOnRefreshListener(this)
+    }
+
+    override fun onRefresh() {
+        loadDataSet()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -87,13 +95,17 @@ class HomeFragment : Fragment() {
      * Download data via ApiExecutor method
      */
     private fun loadDataSet(path: String = "/") {
+        val files = model
+        model.deleteFilesByPath(path)
         getFilesInfo({ it, path ->
             run {
                 it.entries?.let {
                     model.updateFiles(path, fromDtoToModelFileInfo(it, path))
+                    filesInfoList.clear()
                     filesInfoList.addAll(model.getFiles())
                 }
                 viewAdapter.notifyDataSetChanged()
+                swipeContainer.isRefreshing = false
             }
         }, path)
     }

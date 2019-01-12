@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         mTimerIsRunning = savedInstanceState.getBoolean(ARGS_TIMER_IS_RUNNING)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         Log.i(LOG_TAG, "onSaveInstanceState")
         outState?.run {
             putLong(ARGS_DELAY_TIME, mDelayTime)
