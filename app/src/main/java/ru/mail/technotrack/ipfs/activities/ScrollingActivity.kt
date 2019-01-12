@@ -1,11 +1,13 @@
 package ru.mail.technotrack.ipfs.activities
 
 import android.Manifest
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
@@ -17,12 +19,14 @@ import kotlinx.android.synthetic.main.activity_scrolling.*
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 import java.io.File
-import java.io.FileOutputStream
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import ru.mail.technotrack.ipfs.api.RetrofitClient
 import ru.mail.technotrack.ipfs.database.FileInfo
+import android.content.IntentFilter
+import android.util.Log
+import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
+import ru.mail.technotrack.ipfs.services.DownloadIntentService
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -34,6 +38,28 @@ class ScrollingActivity : AppCompatActivity() {
 
     lateinit var ipfsFolderLocation: String
     private val ipfsFolderName: String = "ipfs"
+
+    val FILENAME = "filename"
+    val FILEPATH = "filepath"
+    val FILEBYTES = "filebytes"
+    val RESULT = "result"
+    val NOTIFICATION = "notification"
+
+    private val receiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val bundle = intent.extras
+            if (bundle != null) {
+                val filePath = bundle.getString(FILEPATH)
+                val resultCode = bundle.getInt(RESULT)
+                if (resultCode == Activity.RESULT_OK) {
+                    openFile(filePath)
+                } else {
+                    showError()
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +93,7 @@ class ScrollingActivity : AppCompatActivity() {
                     REQUEST_WRITE_EXTERNAL_FOR_STORAGE
                 )
             } else {
-                dispatchWriteExternalStorageIntent()
+                downloadFile(name.toString())
             }
         }
     }
@@ -75,16 +101,14 @@ class ScrollingActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_WRITE_EXTERNAL_FOR_STORAGE && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
-            dispatchWriteExternalStorageIntent()
+            downloadFile(name.toString())
         }
     }
 
-    private fun dispatchWriteExternalStorageIntent() {
-        val fileLocation = downloadFile(name.toString())
-
+    private fun openFile(filePath: String) {
         val intent = Intent()
         intent.action = android.content.Intent.ACTION_VIEW
-        val file = File(fileLocation)
+        val file = File(filePath)
 
         val mime = MimeTypeMap.getSingleton()
         val extension = file.name.substring(file.name.indexOf(".") + 1)
@@ -97,69 +121,43 @@ class ScrollingActivity : AppCompatActivity() {
         this.startActivity(chooserIntent)
     }
 
-    private fun createIPFSFolder() {
-        val folder = File(Environment.getExternalStorageDirectory().absolutePath, ipfsFolderName)
-        ipfsFolderLocation = folder.absolutePath
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
+    private fun showError() {
+        Log.d("ERROR", "Can't open file")
     }
 
-    private fun downloadFile(fileName: String): String {
+    private fun downloadFile(fileName: String) {
 
         val retrofitClientApi = RetrofitClient.create()
         val call = retrofitClientApi.getFileContent(fileName)
-        var fileLocation: String = ""
-        call.enqueue {
+        call.enqueue(object : retrofit2.Callback<String> {
 
-            onResponse = {
-                fileLocation = saveDownloadedFile(fileName, it.message())
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
+                // add infos for the service which file to download and where to store
+                intent.putExtra(FILENAME, name.toString())
+                intent.putExtra(FILEBYTES, response.body())
+                startService(intent)
             }
 
-            onFailure = {
-                
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("ERROR", "Dowload file $fileName error")
             }
-        }
-        return fileLocation
+        })
     }
 
-    private fun saveDownloadedFile(fileName: String, fileString: String): String {
-        createIPFSFolder()
-        val fileLocation = "$ipfsFolderLocation/$fileName"
-        var file = File(fileLocation)
-        if (file.exists())
-            file.delete()
-        try {
-            val out = FileOutputStream(file)
-            out.write(fileString.toByteArray())
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return fileLocation
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(
+            receiver, IntentFilter(
+                NOTIFICATION
+            )
+        )
     }
 
-    private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
-        val callBackKt = CallBackKt<T>()
-        callback.invoke(callBackKt)
-        this.enqueue(callBackKt)
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(receiver)
     }
 
-    class CallBackKt<T>: Callback<T> {
-
-        var onResponse: ((Response<T>) -> Unit)? = null
-        var onFailure: ((t: Throwable?) -> Unit)? = null
-
-        override fun onFailure(call: Call<T>, t: Throwable) {
-            onFailure?.invoke(t)
-        }
-
-        override fun onResponse(call: Call<T>, response: Response<T>) {
-            onResponse?.invoke(response)
-        }
-
-    }
 
 }
