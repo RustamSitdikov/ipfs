@@ -4,27 +4,42 @@ import android.app.IntentService
 import android.content.Intent
 import android.app.Activity
 import android.os.Environment
+import android.util.Log
+import retrofit2.Call
+import retrofit2.Response
+import ru.mail.technotrack.ipfs.api.RetrofitClient
+import ru.mail.technotrack.ipfs.utils.*
 import java.io.*
-import java.net.URL
 
 
 class DownloadIntentService : IntentService("DownloadIntentService") {
 
     private var result = Activity.RESULT_CANCELED
-    val FILENAME = "filename"
-    val FILEPATH = "filepath"
-    val FILEBYTES = "filebytes"
-    val RESULT = "result"
-    val NOTIFICATION = "notification"
-
-    private val IPFSFOLDERNAMAE = "ipfs"
     lateinit var ipfsFolderLocation: String
 
     override fun onHandleIntent(intent: Intent?) {
         createIPFSFolder()
-
         val fileName = intent?.getStringExtra(FILENAME)
-        val fileBytes = intent?.getStringExtra(FILEBYTES)
+
+        val retrofitClientApi = RetrofitClient.create()
+        val call = retrofitClientApi.getFileContent("/$fileName")
+        call.enqueue(object : retrofit2.Callback<ByteArray> {
+
+            override fun onResponse(call: Call<ByteArray>, response: Response<ByteArray>) {
+                Log.d("HMMMMM", "HMMMMMM")
+                if (fileName != null) {
+                    saveFileIntoExternalStorage(fileName, response.body()!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ByteArray>, t: Throwable) {
+                Log.d("ERROR", "Download file $fileName error")
+            }
+        })
+    }
+
+    private fun saveFileIntoExternalStorage(fileName: String, responseBody: ByteArray) {
+        val fileBytes = responseBody
         val output = File(
             ipfsFolderLocation,
             fileName
@@ -36,7 +51,8 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         var inputStream: InputStream? = null
         var fileOutputStream: FileOutputStream? = null
         try {
-            inputStream = ByteArrayInputStream(fileBytes!!.toByteArray())
+//            inputStream = ByteArrayInputStream(fileBytes!!.toByteArray())
+            inputStream = ByteArrayInputStream(fileBytes!!)
             val reader = InputStreamReader(inputStream)
             fileOutputStream = FileOutputStream(output.path)
             var next = -1
@@ -77,7 +93,7 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
     }
 
     private fun createIPFSFolder() {
-        val folder = File(Environment.getExternalStorageDirectory().absolutePath, IPFSFOLDERNAMAE)
+        val folder = File(Environment.getExternalStorageDirectory().absolutePath, IPFSFOLDERNAME)
         ipfsFolderLocation = folder.absolutePath
         if (!folder.exists()) {
             folder.mkdirs()

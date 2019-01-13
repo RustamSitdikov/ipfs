@@ -19,14 +19,11 @@ import kotlinx.android.synthetic.main.activity_scrolling.*
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 import java.io.File
-import retrofit2.Call
-import retrofit2.Response
-import ru.mail.technotrack.ipfs.api.RetrofitClient
 import ru.mail.technotrack.ipfs.database.FileInfo
 import android.content.IntentFilter
 import android.util.Log
-import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
 import ru.mail.technotrack.ipfs.services.DownloadIntentService
+import ru.mail.technotrack.ipfs.utils.*
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -35,15 +32,6 @@ class ScrollingActivity : AppCompatActivity() {
 
     private lateinit var name: EditText
     private lateinit var type: EditText
-
-    lateinit var ipfsFolderLocation: String
-    private val ipfsFolderName: String = "ipfs"
-
-    val FILENAME = "filename"
-    val FILEPATH = "filepath"
-    val FILEBYTES = "filebytes"
-    val RESULT = "result"
-    val NOTIFICATION = "notification"
 
     private val receiver = object : BroadcastReceiver() {
 
@@ -93,7 +81,7 @@ class ScrollingActivity : AppCompatActivity() {
                     REQUEST_WRITE_EXTERNAL_FOR_STORAGE
                 )
             } else {
-                downloadFile(name.toString())
+                downloadFile()
             }
         }
     }
@@ -101,7 +89,7 @@ class ScrollingActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_WRITE_EXTERNAL_FOR_STORAGE && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
-            downloadFile(name.toString())
+            downloadFile()
         }
     }
 
@@ -125,24 +113,12 @@ class ScrollingActivity : AppCompatActivity() {
         Log.d("ERROR", "Can't open file")
     }
 
-    private fun downloadFile(fileName: String) {
-
-        val retrofitClientApi = RetrofitClient.create()
-        val call = retrofitClientApi.getFileContent(fileName)
-        call.enqueue(object : retrofit2.Callback<String> {
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
-                // add infos for the service which file to download and where to store
-                intent.putExtra(FILENAME, name.toString())
-                intent.putExtra(FILEBYTES, response.body())
-                startService(intent)
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("ERROR", "Dowload file $fileName error")
-            }
-        })
+    private fun downloadFile() {
+        val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
+        // add infos for the service which file to download and where to store
+        Log.d("FILENAME", "FILENAME: $name")
+        intent.putExtra(FILENAME, name.text.toString())
+        startService(intent)
     }
 
     override fun onResume() {
