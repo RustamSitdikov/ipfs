@@ -22,6 +22,7 @@ import java.io.File
 import ru.mail.technotrack.ipfs.database.FileInfo
 import android.content.IntentFilter
 import android.util.Log
+import androidx.core.content.FileProvider
 import ru.mail.technotrack.ipfs.services.DownloadIntentService
 import ru.mail.technotrack.ipfs.utils.*
 
@@ -102,7 +103,7 @@ class ScrollingActivity : AppCompatActivity() {
         val extension = file.name.substring(file.name.indexOf(".") + 1)
         val type = mime.getMimeTypeFromExtension(extension)
 
-        intent.setDataAndType(Uri.fromFile(file), type)
+        intent.setDataAndType(FileProvider.getUriForFile(this, "ru.mail.technotrack.ipfs.providers", file), type)
 
         val chooserIntent = Intent.createChooser(intent, "Choose an application to open with:")
 

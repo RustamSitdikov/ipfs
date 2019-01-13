@@ -23,22 +23,22 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
 
         val retrofitClientApi = RetrofitClient.create()
         val call = retrofitClientApi.getFileContent("/$fileName")
-        call.enqueue(object : retrofit2.Callback<ByteArray> {
+        call.enqueue(object : retrofit2.Callback<String> {
 
-            override fun onResponse(call: Call<ByteArray>, response: Response<ByteArray>) {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 Log.d("HMMMMM", "HMMMMMM")
                 if (fileName != null) {
                     saveFileIntoExternalStorage(fileName, response.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<ByteArray>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.d("ERROR", "Download file $fileName error")
             }
         })
     }
 
-    private fun saveFileIntoExternalStorage(fileName: String, responseBody: ByteArray) {
+    private fun saveFileIntoExternalStorage(fileName: String, responseBody: String) {
         val fileBytes = responseBody
         val output = File(
             ipfsFolderLocation,
@@ -51,14 +51,13 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         var inputStream: InputStream? = null
         var fileOutputStream: FileOutputStream? = null
         try {
-//            inputStream = ByteArrayInputStream(fileBytes!!.toByteArray())
-            inputStream = ByteArrayInputStream(fileBytes!!)
+            inputStream = ByteArrayInputStream(fileBytes.toByteArray())
             val reader = InputStreamReader(inputStream)
             fileOutputStream = FileOutputStream(output.path)
-            var next = -1
+            var next = 0
             while (next != -1) {
                 next = reader.read()
-                fileOutputStream!!.write(next)
+                fileOutputStream.write(next)
             }
             // successfully finished
             result = Activity.RESULT_OK
@@ -68,7 +67,7 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         } finally {
             if (inputStream != null) {
                 try {
-                    inputStream!!.close()
+                    inputStream.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -76,7 +75,7 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
             }
             if (fileOutputStream != null) {
                 try {
-                    fileOutputStream!!.close()
+                    fileOutputStream.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
