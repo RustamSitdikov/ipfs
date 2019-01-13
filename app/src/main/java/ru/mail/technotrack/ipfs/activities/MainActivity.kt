@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTimer(countDownMillis: Long) {
         if (mTimerIsRunning) {
-            mTimer = object : CountDownTimer(countDownMillis,
+            mTimer = object : CountDownTimer(
+                countDownMillis,
                 MILLIS_PER_SECOND
             ) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -94,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             putLong(ARGS_DELAY_TIME, mDelayTime)
             putBoolean(ARGS_TIMER_IS_RUNNING, mTimerIsRunning)
         }
-
         super.onSaveInstanceState(outState)
     }
 }

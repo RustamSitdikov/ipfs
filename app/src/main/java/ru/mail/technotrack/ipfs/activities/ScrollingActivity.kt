@@ -31,7 +31,7 @@ import ru.mail.technotrack.ipfs.services.DownloadIntentService
 
 class ScrollingActivity : AppCompatActivity() {
 
-    private val REQUEST_WRITE_EXTERNAL_FOR_STORAGE  = 1
+    private val REQUEST_WRITE_EXTERNAL_FOR_STORAGE = 1
 
     private lateinit var name: EditText
     private lateinit var type: EditText
@@ -158,6 +158,4 @@ class ScrollingActivity : AppCompatActivity() {
         super.onPause()
         unregisterReceiver(receiver)
     }
-
-
 }

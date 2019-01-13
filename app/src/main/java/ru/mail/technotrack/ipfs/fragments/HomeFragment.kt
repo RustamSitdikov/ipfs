@@ -20,15 +20,14 @@ import ru.mail.technotrack.ipfs.database.converters.fromDtoToModelFileInfo
 
 class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    // TODO: Customize parameters
     private var columnCount = 2
     private var listener: OnListFragmentInteractionListener? = null
     private var filesInfoList = ArrayList<FileInfoEntity>()
-    private lateinit var swipeContainer: SwipeRefreshLayout
 
     private var dataLoaded = false
     private val DATA_LOADED = "dataLoaded"
     private lateinit var model: Model
+    private var currentPath = "/"
 
     private lateinit var viewAdapter: HomeRecyclerViewAdapter
 
@@ -40,7 +39,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        swipeContainer = inflater.inflate(R.layout.fragment_home_list, container, false) as SwipeRefreshLayout
+        val swipeContainer = inflater.inflate(R.layout.fragment_home_list, container, false) as SwipeRefreshLayout
         val view = swipeContainer.findViewById<RecyclerView>(R.id.list)
 
         viewAdapter = HomeRecyclerViewAdapter(
@@ -65,6 +64,15 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         (view as SwipeRefreshLayout).setOnRefreshListener(this)
     }
 
+    /**
+     * when item is clicked
+     * should data from current folder be loaded
+     */
+    fun changeCurrentPath(path: String) {
+        currentPath = path
+        loadDataSet()
+    }
+
     override fun onRefresh() {
         loadDataSet()
     }
@@ -73,12 +81,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         super.onActivityCreated(savedInstanceState)
         dataLoaded = savedInstanceState?.getBoolean(DATA_LOADED) ?: false
         model = Model(this.context!!)
-        if (!dataLoaded) {
-            model.deleteFilesByPath("/")
-            loadDataSet()
-        } else {
-            filesInfoList.addAll(model.getFiles())
-        }
+        onAttachData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -92,22 +95,32 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     /**
+     * In the begining get data from db
+     */
+    fun onAttachData() {
+        filesInfoList.addAll(model.getFiles(currentPath))
+        if(filesInfoList.isEmpty()) {
+            loadDataSet()
+        }
+    }
+
+    /**
      * Download data via ApiExecutor method
      */
-    private fun loadDataSet(path: String = "/") {
+    private fun loadDataSet() {
         val files = model
-        model.deleteFilesByPath(path)
+        model.deleteFilesByPath(currentPath)
         getFilesInfo({ it, path ->
             run {
                 it.entries?.let {
                     model.updateFiles(path, fromDtoToModelFileInfo(it, path))
                     filesInfoList.clear()
-                    filesInfoList.addAll(model.getFiles())
+                    filesInfoList.addAll(model.getFiles(currentPath))
                 }
                 viewAdapter.notifyDataSetChanged()
-                swipeContainer.isRefreshing = false
+                (this.view as SwipeRefreshLayout).isRefreshing = false
             }
-        }, path)
+        }, currentPath)
     }
 
     /**
