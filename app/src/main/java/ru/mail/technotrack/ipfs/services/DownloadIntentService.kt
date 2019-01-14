@@ -48,39 +48,14 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
             output.delete()
         }
 
-        var inputStream: InputStream? = null
-        var fileOutputStream: FileOutputStream? = null
         try {
-            inputStream = ByteArrayInputStream(fileBytes.toByteArray())
-            val reader = InputStreamReader(inputStream)
-            fileOutputStream = FileOutputStream(output.path)
-            var next = 0
-            while (next != -1) {
-                next = reader.read()
-                fileOutputStream.write(next)
-            }
-            // successfully finished
-            result = Activity.RESULT_OK
+            var inputStream = ByteArrayInputStream(fileBytes.toByteArray())
+            var fileOutputStream = FileOutputStream(output.path)
+            StreamCopier.copyStream(inputStream, fileOutputStream)
+        } catch (ex: Exception) {
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-            }
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
         }
+        result = Activity.RESULT_OK
         publishResults(output.absolutePath, result)
     }
 

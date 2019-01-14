@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.webkit.MimeTypeMap
 import android.widget.EditText
@@ -25,6 +24,8 @@ import android.util.Log
 import androidx.core.content.FileProvider
 import ru.mail.technotrack.ipfs.services.DownloadIntentService
 import ru.mail.technotrack.ipfs.utils.*
+import android.widget.ProgressBar
+import android.widget.SeekBar
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -34,6 +35,8 @@ class ScrollingActivity : AppCompatActivity() {
     private lateinit var name: EditText
     private lateinit var type: EditText
 
+    private var seekBar: SeekBar? = null
+
     private val receiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -42,6 +45,8 @@ class ScrollingActivity : AppCompatActivity() {
                 val filePath = bundle.getString(FILEPATH)
                 val resultCode = bundle.getInt(RESULT)
                 if (resultCode == Activity.RESULT_OK) {
+                    seekBar!!.visibility = ProgressBar.INVISIBLE
+                    Snackbar.make(seekBar!!, "File downloaded", Snackbar.LENGTH_SHORT).show()
                     openFile(filePath)
                 } else {
                     showError()
@@ -85,6 +90,8 @@ class ScrollingActivity : AppCompatActivity() {
                 downloadFile()
             }
         }
+
+        seekBar = findViewById(R.id.downloadFileBar)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -115,6 +122,7 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
     private fun downloadFile() {
+        seekBar!!.visibility = ProgressBar.VISIBLE
         val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
         // add infos for the service which file to download and where to store
         Log.d("FILENAME", "FILENAME: $name")
