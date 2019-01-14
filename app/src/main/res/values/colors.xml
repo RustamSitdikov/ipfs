@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">@color/TealGreen</color>
+    <color name="colorPrimaryDark">@color/NaveBlue</color>
+    <color name="colorAccent">@color/Carmine</color>
+    <color name="colorSecondary">@color/CaribbeanGreen</color>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="NaveBlue">#0b3a53</color>
+    <color name="NavyBlueMuted">#244e68</color>
+
+    <color name="Turquoise">#69c4cd</color>
+    <color name="TurquoiseMuted">#9ad4d8</color>
+
+    <color name="LightGrey">#b7bbc8</color>
+    <color name="LightGreyMuted">#e7e8ee</color>
+
+    <color name="Carmine">#ea5037</color>
+    <color name="CarmineMuted">#f36149</color>
+
+    <color name="Yellow">#f39021</color>
+    <color name="YellowMuted">#f9a13e</color>
+
+    <color name="TealGreen">#3e9096</color>
+    <color name="TealGreenMuted">#439a9d</color>
+
+    <color name="CaribbeanGreen">#0cb892</color>
+    <color name="CaribbeanGreenMuted">#0aca9f</color>
+
+    <color name="SnowGrey">#edfdf4</color>
+    <color name="SnowGreyMuted">#f7f8fa</color>
+
+    <color name="ic_launcher_background">@color/colorPrimary</color>
 </resources>
