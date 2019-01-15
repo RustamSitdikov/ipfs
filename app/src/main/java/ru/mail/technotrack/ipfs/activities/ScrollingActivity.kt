@@ -36,7 +36,7 @@ class ScrollingActivity : AppCompatActivity() {
     private lateinit var type: EditText
     private lateinit var item: FileInfo
 
-    private var seekBar: SeekBar? = null
+    private lateinit var seekBar: SeekBar
 
     private val receiver = object : BroadcastReceiver() {
 
@@ -46,8 +46,8 @@ class ScrollingActivity : AppCompatActivity() {
                 val filePath = bundle.getString(FILEPATH)
                 val resultCode = bundle.getInt(RESULT)
                 if (resultCode == Activity.RESULT_OK) {
-                    seekBar!!.visibility = ProgressBar.INVISIBLE
-                    Snackbar.make(seekBar!!, "File downloaded", Snackbar.LENGTH_SHORT).show()
+                    seekBar.visibility = ProgressBar.INVISIBLE
+                    Snackbar.make(seekBar, "File downloaded", Snackbar.LENGTH_SHORT).show()
                     openFile(filePath)
                 } else {
                     showError()
@@ -123,7 +123,7 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
     private fun downloadFile() {
-        seekBar!!.visibility = ProgressBar.VISIBLE
+        seekBar.visibility = ProgressBar.VISIBLE
         val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
         intent.putExtra(ITEM_FILE, item)
         startService(intent)
