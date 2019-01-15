@@ -34,6 +34,7 @@ class ScrollingActivity : AppCompatActivity() {
 
     private lateinit var name: EditText
     private lateinit var type: EditText
+    private lateinit var item: FileInfo
 
     private var seekBar: SeekBar? = null
 
@@ -57,7 +58,7 @@ class ScrollingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val item = intent.extras.getSerializable("item") as FileInfo
+        item = intent.extras.getSerializable("item") as FileInfo
         setContentView(R.layout.activity_scrolling)
 
         name = findViewById(R.id.name)
@@ -124,9 +125,7 @@ class ScrollingActivity : AppCompatActivity() {
     private fun downloadFile() {
         seekBar!!.visibility = ProgressBar.VISIBLE
         val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
-        // add infos for the service which file to download and where to store
-        Log.d("FILENAME", "FILENAME: $name")
-        intent.putExtra(FILENAME, name.text.toString())
+        intent.putExtra(ITEM_FILE, item)
         startService(intent)
     }
 

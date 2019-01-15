@@ -10,8 +10,6 @@ import ru.mail.technotrack.ipfs.api.DTO.FileInfo
 import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
 import ru.mail.technotrack.ipfs.utils.BASE_API_URL
 
-
-
 interface RetrofitClient {
     companion object Factory {
         fun create(): RetrofitClient{

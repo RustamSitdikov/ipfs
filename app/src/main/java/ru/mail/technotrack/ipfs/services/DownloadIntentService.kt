@@ -4,10 +4,8 @@ import android.app.IntentService
 import android.content.Intent
 import android.app.Activity
 import android.os.Environment
-import android.util.Log
-import retrofit2.Call
-import retrofit2.Response
-import ru.mail.technotrack.ipfs.api.RetrofitClient
+import ru.mail.technotrack.ipfs.api.downloadFile
+import ru.mail.technotrack.ipfs.database.FileInfo
 import ru.mail.technotrack.ipfs.utils.*
 import java.io.*
 
@@ -19,26 +17,15 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
 
     override fun onHandleIntent(intent: Intent?) {
         createIPFSFolder()
-        val fileName = intent?.getStringExtra(FILENAME)
-
-        val retrofitClientApi = RetrofitClient.create()
-        val call = retrofitClientApi.getFileContent("/$fileName")
-        call.enqueue(object : retrofit2.Callback<String> {
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                Log.d("HMMMMM", "HMMMMMM")
-                if (fileName != null) {
-                    saveFileIntoExternalStorage(fileName, response.body()!!)
-                }
+        val file = intent?.getSerializableExtra(ITEM_FILE) as FileInfo
+        downloadFile({ it, name ->
+            run {
+                saveFileIntoExternalStorage(it, name)
             }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("ERROR", "Download file $fileName error")
-            }
-        })
+        }, file)
     }
 
-    private fun saveFileIntoExternalStorage(fileName: String, responseBody: String) {
+    private fun saveFileIntoExternalStorage(responseBody: String, fileName: String) {
         val fileBytes = responseBody
         val output = File(
             ipfsFolderLocation,
