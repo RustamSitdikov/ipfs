@@ -1,11 +1,12 @@
 package ru.mail.technotrack.ipfs.activities
 
 import android.Manifest
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.webkit.MimeTypeMap
 import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
@@ -17,12 +18,14 @@ import kotlinx.android.synthetic.main.activity_scrolling.*
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.utils.getTypeFile
 import java.io.File
-import java.io.FileOutputStream
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.mail.technotrack.ipfs.api.RetrofitClient
 import ru.mail.technotrack.ipfs.database.FileInfo
+import android.content.IntentFilter
+import android.util.Log
+import androidx.core.content.FileProvider
+import ru.mail.technotrack.ipfs.services.DownloadIntentService
+import ru.mail.technotrack.ipfs.utils.*
+import android.widget.ProgressBar
+import android.widget.SeekBar
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -31,13 +34,31 @@ class ScrollingActivity : AppCompatActivity() {
 
     private lateinit var name: EditText
     private lateinit var type: EditText
+    private lateinit var item: FileInfo
 
-    lateinit var ipfsFolderLocation: String
-    private val ipfsFolderName: String = "ipfs"
+    private var seekBar: SeekBar? = null
+
+    private val receiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val bundle = intent.extras
+            if (bundle != null) {
+                val filePath = bundle.getString(FILEPATH)
+                val resultCode = bundle.getInt(RESULT)
+                if (resultCode == Activity.RESULT_OK) {
+                    seekBar!!.visibility = ProgressBar.INVISIBLE
+                    Snackbar.make(seekBar!!, "File downloaded", Snackbar.LENGTH_SHORT).show()
+                    openFile(filePath)
+                } else {
+                    showError()
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val item = intent.extras.getSerializable("item") as FileInfo
+        item = intent.extras.getSerializable("item") as FileInfo
         setContentView(R.layout.activity_scrolling)
 
         name = findViewById(R.id.name)
@@ -67,97 +88,58 @@ class ScrollingActivity : AppCompatActivity() {
                     REQUEST_WRITE_EXTERNAL_FOR_STORAGE
                 )
             } else {
-                dispatchWriteExternalStorageIntent()
+                downloadFile()
             }
         }
+
+        seekBar = findViewById(R.id.downloadFileBar)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_WRITE_EXTERNAL_FOR_STORAGE && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
-            dispatchWriteExternalStorageIntent()
+            downloadFile()
         }
     }
 
-    private fun dispatchWriteExternalStorageIntent() {
-        val fileLocation = downloadFile(name.toString())
-
+    private fun openFile(filePath: String) {
         val intent = Intent()
         intent.action = android.content.Intent.ACTION_VIEW
-        val file = File(fileLocation)
+        val file = File(filePath)
 
         val mime = MimeTypeMap.getSingleton()
         val extension = file.name.substring(file.name.indexOf(".") + 1)
         val type = mime.getMimeTypeFromExtension(extension)
 
-        intent.setDataAndType(Uri.fromFile(file), type)
+        intent.setDataAndType(FileProvider.getUriForFile(this, "ru.mail.technotrack.ipfs.providers", file), type)
 
         val chooserIntent = Intent.createChooser(intent, "Choose an application to open with:")
 
         this.startActivity(chooserIntent)
     }
 
-    private fun createIPFSFolder() {
-        val folder = File(Environment.getExternalStorageDirectory().absolutePath, ipfsFolderName)
-        ipfsFolderLocation = folder.absolutePath
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
+    private fun showError() {
+        Log.d("ERROR", "Can't open file")
     }
 
-    private fun downloadFile(fileName: String): String {
-
-        val retrofitClientApi = RetrofitClient.create()
-        val call = retrofitClientApi.getFileContent(fileName)
-        var fileLocation: String = ""
-        call.enqueue {
-
-            onResponse = {
-                fileLocation = saveDownloadedFile(fileName, it.message())
-            }
-
-            onFailure = {
-
-            }
-        }
-        return fileLocation
+    private fun downloadFile() {
+        seekBar!!.visibility = ProgressBar.VISIBLE
+        val intent = Intent(this@ScrollingActivity, DownloadIntentService::class.java)
+        intent.putExtra(ITEM_FILE, item)
+        startService(intent)
     }
 
-    private fun saveDownloadedFile(fileName: String, fileString: String): String {
-        createIPFSFolder()
-        val fileLocation = "$ipfsFolderLocation/$fileName"
-        var file = File(fileLocation)
-        if (file.exists())
-            file.delete()
-        try {
-            val out = FileOutputStream(file)
-            out.write(fileString.toByteArray())
-            out.flush()
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return fileLocation
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(
+            receiver, IntentFilter(
+                NOTIFICATION
+            )
+        )
     }
 
-    private fun <T> Call<T>.enqueue(callback: CallBackKt<T>.() -> Unit) {
-        val callBackKt = CallBackKt<T>()
-        callback.invoke(callBackKt)
-        this.enqueue(callBackKt)
-    }
-
-    class CallBackKt<T> : Callback<T> {
-
-        var onResponse: ((Response<T>) -> Unit)? = null
-        var onFailure: ((t: Throwable?) -> Unit)? = null
-
-        override fun onFailure(call: Call<T>, t: Throwable) {
-            onFailure?.invoke(t)
-        }
-
-        override fun onResponse(call: Call<T>, response: Response<T>) {
-            onResponse?.invoke(response)
-        }
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(receiver)
     }
 }
