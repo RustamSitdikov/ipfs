@@ -125,7 +125,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|start"
-            app:srcCompat="@android:drawable/ic_menu_manage"/>
+            app:srcCompat="@drawable/ic_baseline_open_in_new_24px"/>
 
     <SeekBar
             android:id="@+id/downloadFileBar"

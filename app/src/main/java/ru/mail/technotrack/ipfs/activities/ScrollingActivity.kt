@@ -112,6 +112,7 @@ class ScrollingActivity : AppCompatActivity() {
         val type = mime.getMimeTypeFromExtension(extension)
 
         intent.setDataAndType(FileProvider.getUriForFile(this, "ru.mail.technotrack.ipfs.providers", file), type)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         val chooserIntent = Intent.createChooser(intent, "Choose an application to open with:")
 
