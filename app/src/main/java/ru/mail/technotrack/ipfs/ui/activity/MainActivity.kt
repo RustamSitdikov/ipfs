@@ -7,6 +7,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.mail.technotrack.ipfs.App
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.ui.fragment.DashboardFragment
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        DaggerAppComponent.builder().build().inject(this)
+        (application as App).appComponent.inject(this)
 
         // Create fragments
         createFragments()

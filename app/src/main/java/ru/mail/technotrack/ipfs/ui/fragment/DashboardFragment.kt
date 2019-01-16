@@ -14,12 +14,15 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
+import ru.mail.technotrack.ipfs.App
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.data.network.IPFSApi
 import ru.mail.technotrack.ipfs.data.service.IPFSService
-import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.viewmodel.IPFSViewModel
 import javax.inject.Inject
+import androidx.lifecycle.ViewModelProvider
+import ru.mail.technotrack.ipfs.viewmodel.ViewModelFactory
+
 
 enum class State(val value: Int) {
     START(R.string.start_ipfs),
@@ -37,6 +40,8 @@ class DashboardFragment : Fragment() {
     @Inject
     lateinit var api: IPFSApi
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: IPFSViewModel
 
     private val ipfsReceiver = object : BroadcastReceiver() {
@@ -49,7 +54,7 @@ class DashboardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder().build().inject(this)
+        (activity!!.application as App).appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,7 +64,7 @@ class DashboardFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(IPFSViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(IPFSViewModel::class.java)
 
         viewModel.getInfo().observe(this, Observer {
             peerIdTextView.text = it.peerId

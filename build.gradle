@@ -26,7 +26,6 @@ buildscript {
         legacyVersion = '1.0.0'
         okioVersion = '2.1.0'
         kotlinCoroutineVersion = '0.1.3'
-        ipfsVersion = '1.2.2'
 
         junitVersion = '4.12'
         espressoVersion = '3.1.1'

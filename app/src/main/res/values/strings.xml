@@ -31,4 +31,11 @@
     <string name="peer_id">PEER ID</string>
     <string name="version">VERSION</string>
     <string name="api">API</string>
+
+    <string name="title_activity_navifation_drawer">NavifationDrawerActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="action_example">Example action</string>
 </resources>

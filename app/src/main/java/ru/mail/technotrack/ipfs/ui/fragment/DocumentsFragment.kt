@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ru.mail.technotrack.ipfs.App
 import ru.mail.technotrack.ipfs.model.Document
 
 import ru.mail.technotrack.ipfs.R
-import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.ui.adapter.DocumentsRecyclerViewAdapter
 import ru.mail.technotrack.ipfs.viewmodel.IPFSViewModel
+import ru.mail.technotrack.ipfs.viewmodel.ViewModelFactory
+import javax.inject.Inject
 
 
 class DocumentsFragment : Fragment() {
@@ -30,13 +33,16 @@ class DocumentsFragment : Fragment() {
 
     private val LOG_TAG: String = DocumentsFragment::class::simpleName.toString()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: IPFSViewModel
+
     private lateinit var adapter: DocumentsRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerAppComponent.builder().build().inject(this)
+        (activity!!.application as App).appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,7 +62,7 @@ class DocumentsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(IPFSViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(IPFSViewModel::class.java)
 
         viewModel.getDocuments().observe(this, Observer {
             adapter.setItems(it)

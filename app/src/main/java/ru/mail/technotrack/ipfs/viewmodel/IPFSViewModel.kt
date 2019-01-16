@@ -1,8 +1,10 @@
 package ru.mail.technotrack.ipfs.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.Observable
 import ru.mail.technotrack.ipfs.data.repository.IPFSRepository
 import ru.mail.technotrack.ipfs.model.Document
@@ -11,16 +13,19 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import ru.mail.technotrack.ipfs.App
+import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.model.Info
 
 
-class IPFSViewModel : ViewModel() {
+class IPFSViewModel @Inject constructor(val application: Application, val repository: IPFSRepository) : ViewModel() {
     lateinit var infoLiveData: LiveData<Info>
-    lateinit var documentsLiveData: MutableLiveData<MutableList<Document>>
-    lateinit var compositeDisposable: CompositeDisposable
+    var documentsLiveData: MutableLiveData<MutableList<Document>> = MutableLiveData()
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    @Inject
-    lateinit var repository: IPFSRepository
+    init {
+        (application as App).appComponent.inject(this)
+    }
 
     fun loadDocuments() {
         val documentsDisposable = repository.getDocuments()
@@ -35,11 +40,7 @@ class IPFSViewModel : ViewModel() {
     }
 
     fun getDocuments(): LiveData<MutableList<Document>> {
-        if(!::documentsLiveData.isInitialized) {
-            documentsLiveData = MutableLiveData()
-            compositeDisposable = CompositeDisposable()
-            loadDocuments()
-        }
+        loadDocuments()
         return documentsLiveData
     }
 

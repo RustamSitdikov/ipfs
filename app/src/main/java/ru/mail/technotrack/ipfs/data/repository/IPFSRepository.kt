@@ -10,9 +10,7 @@ import javax.inject.Singleton
 import javax.inject.Inject
 
 
-@Singleton
-class IPFSRepository
-@Inject constructor(private val api: IPFSApi, private val dao: IPFSDao) {
+class IPFSRepository constructor(private val api: IPFSApi, private val dao: IPFSDao) {
 
     fun getInfo(): Observable<Info> {
         return api.getInfo()

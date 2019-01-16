@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
+import ru.mail.technotrack.ipfs.App
 import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.data.network.IPFSApi
 import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
@@ -36,7 +38,7 @@ class SplashActivity : AppCompatActivity() {
 
         progressAnimationView = findViewById(R.id.progress_view)
 
-        DaggerAppComponent.builder().build().inject(this)
+        (application as App).appComponent.inject(this)
     }
 
     override fun onResume() {
