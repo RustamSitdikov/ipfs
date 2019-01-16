@@ -20,12 +20,12 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         val file = intent?.getSerializableExtra(ITEM_FILE) as FileInfo
         downloadFile({ it, name ->
             run {
-                saveFileIntoExternalStorage(it, name)
+                saveFileIntoExternalStorage(it.byteStream(), name)
             }
         }, file)
     }
 
-    private fun saveFileIntoExternalStorage(responseBody: String, fileName: String) {
+    private fun saveFileIntoExternalStorage(responseBody: InputStream, fileName: String) {
         val fileBytes = responseBody
         val output = File(
             ipfsFolderLocation,
@@ -36,7 +36,7 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         }
 
         try {
-            val inputStream = ByteArrayInputStream(fileBytes.toByteArray())
+            val inputStream = responseBody
             val fileOutputStream = FileOutputStream(output.path)
             StreamCopier.copyStream(inputStream, fileOutputStream)
         } catch (ex: Exception) {

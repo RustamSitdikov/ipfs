@@ -1,5 +1,6 @@
 package ru.mail.technotrack.ipfs.api
 
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,8 +28,8 @@ interface RetrofitClient {
         @Query("arg") filesPath: String="/",
         @Query("l") longListing: Boolean=true): Call<FileInfoList>
 
-    @GET("/api/v0/files/read")
-    fun getFileContent(@Query("arg") filesPath: String="/"): Call<String>
+    @GET("/api/v0/cat")
+    fun getFileContent(@Query("arg") filesPath: String="/"): Call<ResponseBody>
 
     @POST("/api/v0/files/write")
     fun uploadFileContent(@Part data: ByteArray, @Query("arg") path: String="/"): Call<String>

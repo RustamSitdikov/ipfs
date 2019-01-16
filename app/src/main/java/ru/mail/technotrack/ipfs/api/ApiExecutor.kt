@@ -1,5 +1,6 @@
 package ru.mail.technotrack.ipfs.api
 
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
@@ -18,14 +19,14 @@ fun getFilesInfo(result: (FileInfoList, String) -> Unit, path: String = "/") {
     })
 }
 
-fun downloadFile(result: (String, String) -> Unit, file: FileInfo) {
+fun downloadFile(result: (ResponseBody, String) -> Unit, file: FileInfo) {
     val service = RetrofitClient.create()
-    service.getFileContent(file.path + file.name).enqueue(object: retrofit2.Callback<String> {
-        override fun onResponse(call: Call<String>, response: Response<String>) {
+    service.getFileContent(file.hash).enqueue(object: retrofit2.Callback<ResponseBody> {
+        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
             response.body()?.let { result(it, file.name) }
         }
 
-        override fun onFailure(call: Call<String>, t: Throwable) {
+        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
         }
 
     })

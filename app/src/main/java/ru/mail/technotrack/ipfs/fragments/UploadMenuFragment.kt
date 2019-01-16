@@ -143,8 +143,8 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         val fileUri = data?.data as Uri
         if (resultCode == RESULT_OK) {
-            val file = File("${context?.getExternalFilesDir(null)?.absolutePath}/${fileUri.path}")
+            context?.contentResolver?.openInputStream(fileUri)
+
         }
     }
-
 }
