@@ -30,3 +30,17 @@ fun downloadFile(result: (String, String) -> Unit, file: FileInfo) {
 
     })
 }
+
+fun uploadFile(result: (String) -> Unit, file: ByteArray) {
+    val service = RetrofitClient.create()
+
+    service.uploadFileContent(file).enqueue(object: retrofit2.Callback<String> {
+        override fun onResponse(call: Call<String>, response: Response<String>) {
+            //response.body()?.let { result(it, file.name) }
+        }
+
+        override fun onFailure(call: Call<String>, t: Throwable) {
+        }
+
+    })
+}

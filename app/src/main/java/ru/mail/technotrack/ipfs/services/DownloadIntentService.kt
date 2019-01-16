@@ -36,8 +36,8 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         }
 
         try {
-            var inputStream = ByteArrayInputStream(fileBytes.toByteArray())
-            var fileOutputStream = FileOutputStream(output.path)
+            val inputStream = ByteArrayInputStream(fileBytes.toByteArray())
+            val fileOutputStream = FileOutputStream(output.path)
             StreamCopier.copyStream(inputStream, fileOutputStream)
         } catch (ex: Exception) {
 

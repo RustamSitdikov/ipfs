@@ -16,8 +16,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_upload_menu.*
 
 import ru.mail.technotrack.ipfs.R
-import android.graphics.Bitmap
-import android.widget.ImageView
+import android.net.Uri
+import java.io.File
 
 
 class UploadMenuFragment : BottomSheetDialogFragment() {
@@ -50,11 +50,9 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
                             arrayOf(Manifest.permission.CAMERA),
                             REQUEST_CAMERA
                         )
-                        dismiss()
                         true
                     } else {
                         dispatchTakePictureIntent()
-                        dismiss()
                         true
                     }
                 }
@@ -68,11 +66,9 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
                             activity!!,
                             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                             REQUEST_READ_EXTERNAL_FOR_GALLERY)
-                        dismiss()
                         true
                     } else {
                         dispatchSelectPictureFromGalleryIntent()
-                        dismiss()
                         true
                     }
                 }
@@ -86,11 +82,9 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
                             activity!!,
                             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                             REQUEST_READ_EXTERNAL_FOR_STORAGE)
-                        dismiss()
                         true
                     } else {
                         dispatchSelectFileFromStorageIntent()
-                        dismiss()
                         true
                     }
                 }
@@ -147,21 +141,10 @@ class UploadMenuFragment : BottomSheetDialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val photo = data!!.extras.get("data") as Bitmap
-            val imageView = this.activity!!.findViewById<ImageView>(R.id.imageView)
-            imageView.setImageBitmap(photo)
+        val fileUri = data?.data as Uri
+        if (resultCode == RESULT_OK) {
+            val file = File("${context?.getExternalFilesDir(null)?.absolutePath}/${fileUri.path}")
         }
-
-        if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK) {
-//            do something
-        }
-
-        if (requestCode == REQUEST_PICK_FILE && resultCode == RESULT_OK) {
-//            do something
-        }
-
     }
 
 }
