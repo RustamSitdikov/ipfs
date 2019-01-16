@@ -1,23 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragment.DashboardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:padding="@dimen/padding_standart"
-        android:layout_gravity="center_horizontal">
+        android:paddingHorizontal="@dimen/padding_standart_half" >
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/runButton"
-            android:layout_width="@dimen/run_ipfs_button_width"
-            android:layout_height="@dimen/run_ipfs_button_height"
-            android:layout_margin="@dimen/margin_standart"
-            android:text="@string/start_ipfs"/>
+        <TextView
+            android:id="@+id/nodeInfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_standart"
+            android:text="@string/node_info"
+            android:textColor="@color/colorSecondary"
+            android:textSize="@dimen/text_size_large"
+            android:layout_marginTop="@dimen/margin_standart_half"
+            android:layout_marginBottom="@dimen/margin_standart_half"
+            app:layout_constraintBottom_toTopOf="@id/nodeInfoGridLayout"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <GridLayout
+            android:id="@+id/nodeInfoGridLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size_medium"
+            android:layout_marginStart="@dimen/margin_standart_half"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nodeInfoGridLayout">
+
+            <TextView
+                android:layout_width="@dimen/grid_layout_key_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:layout_marginEnd="@dimen/margin_standart"
+                android:text="@string/peer_id" />
+
+            <TextView
+                android:id="@+id/peerIdTextView"
+                android:layout_width="@dimen/grid_layout_value_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:layout_marginStart="@dimen/grid_layout_value_margin_start"
+                android:text="@string/app_name" />
+
+            <TextView
+                android:layout_width="@dimen/grid_layout_key_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:text="@string/version" />
+
+            <TextView
+                android:id="@+id/versionTextView"
+                android:layout_width="@dimen/grid_layout_value_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:layout_marginStart="@dimen/grid_layout_value_margin_start"
+                android:text="@string/app_name" />
+
+            <TextView
+                android:layout_width="@dimen/grid_layout_key_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:text="@string/api" />
+
+            <TextView
+                android:id="@+id/apiTextView"
+                android:layout_width="@dimen/grid_layout_value_text_view_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_standart_half"
+                android:layout_marginBottom="@dimen/margin_standart_half"
+                android:layout_marginStart="@dimen/grid_layout_value_margin_start"
+                android:text="@string/app_name" />
+
+        </GridLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

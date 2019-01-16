@@ -6,6 +6,10 @@
     <dimen name="spacing_standart">16dp</dimen>
     <dimen name="spacing_standart_half">8dp</dimen>
 
+    <dimen name="text_size_small">8sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
+
     <dimen name="card_corner_radius">6dp</dimen>
     <dimen name="card_elevation">6dp</dimen>
     <dimen name="card_image_width">75dp</dimen>
@@ -17,12 +21,22 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
 
+    <dimen name="bottom_navigation_view_height">60dp</dimen>
     <dimen name="bottom_navigation_view_elevation">32dp</dimen>
     <dimen name="bottom_navigation_view_item_size">16dp</dimen>
-
     <dimen name="bottom_navigation_text_size_inactive">10sp</dimen>
     <dimen name="bottom_navigation_text_size_active">14sp</dimen>
 
-    <dimen name="run_ipfs_button_width">140dp</dimen>
+    <dimen name="run_ipfs_button_width">200dp</dimen>
     <dimen name="run_ipfs_button_height">60dp</dimen>
+    <dimen name="run_ipfs_corner_radius">20dp</dimen>
+
+    <dimen name="run_ipfs_progress_bar_width">100dp</dimen>
+    <dimen name="run_ipfs_progress_bar_height">100dp</dimen>
+    
+    <dimen name="grid_layout_key_text_view_width">60dp</dimen>
+    
+    <dimen name="grid_layout_value_text_view_width">200dp</dimen>
+    <dimen name="grid_layout_value_margin_start">80dp</dimen>
+    <dimen name="grid_layout_margin_vertical">32dp</dimen>
 </resources>

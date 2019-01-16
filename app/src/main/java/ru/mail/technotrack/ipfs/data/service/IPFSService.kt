@@ -18,7 +18,7 @@ import ru.mail.technotrack.ipfs.utils.NotificationId
 
 class IPFSService @JvmOverloads constructor(name: String = "IPFS Service") : IntentService(name) {
 
-    private val LOG_TAG: String = "ru.mail.technotrack.ipfs.data.service.IPFSService"
+    private val LOG_TAG: String = IPFSService::class::simpleName.toString()
 
     companion object {
         const val ACTION = "action"
@@ -33,7 +33,6 @@ class IPFSService @JvmOverloads constructor(name: String = "IPFS Service") : Int
     }
 
     enum class Action(val action: String?) {
-        CREATE("CREATE"),
         START("START"),
         STOP("STOP")
     }
@@ -49,23 +48,22 @@ class IPFSService @JvmOverloads constructor(name: String = "IPFS Service") : Int
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { it ->
                 run {
-                    val notificationText: String = it
-                    val notificationTitle: String
-
                     val action: Action = Action.valueOf(intent.action!!)
-                    when (action) {
-                        Action.CREATE -> {
-                            createNotification("", notificationText)
-                        }
-                        Action.START -> {
-                            notificationTitle = resources.getString(R.string.notification_ipfs_created)
-                            createNotification(notificationTitle, notificationText)
-                        }
-                        Action.STOP -> {
-                            notificationTitle = resources.getString(R.string.notification_ipfs_stopped)
-                            createNotification(notificationTitle, notificationText)
-                        }
-                    }
+//                    val notificationText: String = ""
+//                    val notificationTitle: String
+//                    when (action) {
+//                        Action.CREATE -> {
+//                            createNotification("", notificationText)
+//                        }
+//                        Action.START -> {
+//                            notificationTitle = resources.getString(R.string.notification_ipfs_created)
+//                            createNotification(notificationTitle, notificationText)
+//                        }
+//                        Action.STOP -> {
+//                            notificationTitle = resources.getString(R.string.notification_ipfs_stopped)
+//                            createNotification(notificationTitle, notificationText)
+//                        }
+//                    }
 
                     val broadcastIntent = Intent(ACTION)
                     broadcastIntent.putExtra(MESSAGE, action.toString())
@@ -74,11 +72,10 @@ class IPFSService @JvmOverloads constructor(name: String = "IPFS Service") : Int
             }.subscribe()
     }
 
-    private fun execute(intent: Intent) : String {
+    private fun execute(intent: Intent) : Boolean {
         val action: Action = Action.valueOf(intent.action!!)
         return when (action) {
-            Action.CREATE -> IPFSDaemon.create(applicationContext)
-            Action.START -> IPFSDaemon.start()
+            Action.START -> IPFSDaemon.start(applicationContext)
             Action.STOP -> IPFSDaemon.stop()
         }
     }
@@ -95,7 +92,7 @@ class IPFSService @JvmOverloads constructor(name: String = "IPFS Service") : Int
         Log.d(LOG_TAG, "destroy service")
 
         super.onDestroy()
-//        destroyNotificationManager()
+        destroyNotificationManager()
     }
 
     private fun createNotificationManager() {

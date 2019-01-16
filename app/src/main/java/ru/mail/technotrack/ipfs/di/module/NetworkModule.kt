@@ -8,11 +8,12 @@ import dagger.Module
 import android.app.Application
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
-import com.squareup.moshi.Moshi
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import io.reactivex.schedulers.Schedulers
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
-import ru.mail.technotrack.ipfs.data.network.Api
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.mail.technotrack.ipfs.data.network.IPFSApi
 import ru.mail.technotrack.ipfs.data.network.EndPoints
 
 
@@ -31,8 +32,8 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideMoshi(): Moshi {
-        return Moshi.Builder().build()
+    internal fun provideGson(): Gson {
+        return GsonBuilder().create()
     }
 
     @Provides
@@ -43,9 +44,9 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit {
+    internal fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .baseUrl(BASE_URL)
             .client(okHttpClient)
@@ -54,7 +55,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideApi(retrofit: Retrofit): Api {
-        return retrofit.create(Api::class.java)
+    internal fun provideApi(retrofit: Retrofit): IPFSApi {
+        return retrofit.create(IPFSApi::class.java)
     }
 }

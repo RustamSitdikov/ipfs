@@ -2,18 +2,25 @@ package ru.mail.technotrack.ipfs
 
 import android.content.Context
 import android.os.Build
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
 import okio.buffer
 import okio.sink
 import okio.source
 import java.io.*
 
 
+enum class Command(val value: String) {
+    INIT("init"),
+    START("daemon &")
+}
+
+
 object IPFSDaemon {
 
     private val LOG_TAG: String = "ru.mail.technotrack.ipfs.IPFSDaemon"
 
-    private const val INIT_COMMAND = "init"
-    private const val START_COMMAND = "daemon"
     private const val IPFS_PATH = "IPFS_PATH"
 
     lateinit var REPOSITORY_FILE: File
@@ -28,22 +35,22 @@ object IPFSDaemon {
     }
     lateinit var process: Process
 
-    fun create(context: Context): String {
+    fun start(context: Context): Boolean {
         REPOSITORY_FILE = File(context.filesDir, "repository")
         BINARY_FILE = File(context.filesDir, "binary")
 
         if (!BINARY_FILE.exists()) {
             download(context, BINARY_FILE)
         }
-        return execute(INIT_COMMAND)
+        val initProcess = execute(Command.INIT.value)
+        initProcess.waitFor()
+        process = execute(Command.START.value)
+        return true
     }
 
-    fun start(): String {
-        return execute(START_COMMAND)
-    }
-
-    fun stop(): String {
-        return process.destroy().toString()
+    fun stop(): Boolean {
+        process.destroy()
+        return true
     }
 
     private fun download(context: Context, file: File) {
@@ -59,18 +66,9 @@ object IPFSDaemon {
         file.setExecutable(true)
     }
 
-    private fun execute(command: String): String {
-        process = run(command)
-        val result = process.inputStream.bufferedReader().readText()
-        process.waitFor()
-        return result
-    }
-
-    private fun run(instruction: String): Process {
+    private fun execute(instruction: String): Process {
         val command = "${BINARY_FILE.absolutePath} $instruction"
-//        val environment = arrayOf("$IPFS_PATH=${REPOSITORY_FILE.absoluteFile}")
-//        return Runtime.getRuntime().exec(command, environment)
-        val processBuilder = ProcessBuilder(command)
-        return processBuilder.start()
+        val envp = arrayOf("$IPFS_PATH=${REPOSITORY_FILE.absoluteFile}")
+        return Runtime.getRuntime().exec(command, envp)
     }
 }

@@ -1,6 +1,5 @@
 package ru.mail.technotrack.ipfs.ui.activity
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,10 +11,6 @@ import ru.mail.technotrack.ipfs.R
 import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.ui.fragment.DashboardFragment
 import ru.mail.technotrack.ipfs.ui.fragment.DocumentsFragment
-import ru.mail.technotrack.ipfs.data.service.IPFSService
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.content.IntentFilter
-import android.util.Log
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val LOG_TAG: String = "ru.mail.technotrack.ipfs.ui.activity.MainActivity"
+    private val LOG_TAG: String = MainActivity::class::simpleName.toString()
 
     private val dashboardFragment: Fragment = DashboardFragment.newInstance()
     private val documentsFragment: Fragment = DocumentsFragment.newInstance()
@@ -46,8 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         // Create bottom navigation listener
         mainNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-//        IPFSService.start(this, IPFSService.Action.START.toString())
     }
 
     private fun createFragments() {
@@ -71,23 +64,11 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
-    private val ipfsReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val message = intent.getStringExtra(IPFSService.MESSAGE)
-            Log.d(LOG_TAG, message)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
-
-        val intentFilter = IntentFilter(IPFSService.ACTION)
-        LocalBroadcastManager.getInstance(this).registerReceiver(ipfsReceiver, intentFilter)
     }
 
     override fun onPause() {
         super.onPause()
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(ipfsReceiver)
     }
 }

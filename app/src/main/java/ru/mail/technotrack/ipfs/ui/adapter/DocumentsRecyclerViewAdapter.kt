@@ -27,11 +27,11 @@ class DocumentsRecyclerViewAdapter(
         holder.bind(items[position])
     }
 
-    fun dispatch(newList: MutableList<Document>) {
-        val diffUtilCallback = DiffUtilCallback(newList, items)
+    fun setItems(newItems: MutableList<Document>) {
+        val diffUtilCallback = DiffUtilCallback(newItems, items)
         val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
         items.clear()
-        items.addAll(newList)
+        items.addAll(newItems)
         diffResult.dispatchUpdatesTo(this)
     }
 

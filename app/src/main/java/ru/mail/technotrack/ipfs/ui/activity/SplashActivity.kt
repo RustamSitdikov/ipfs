@@ -8,19 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
-import ru.mail.technotrack.ipfs.App
 import ru.mail.technotrack.ipfs.R
-import ru.mail.technotrack.ipfs.data.network.Api
+import ru.mail.technotrack.ipfs.data.network.IPFSApi
 import ru.mail.technotrack.ipfs.di.component.DaggerAppComponent
 import ru.mail.technotrack.ipfs.data.service.IPFSService
 import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-    private val LOG_TAG: String = "ru.mail.technotrack.ipfs.ui.activity.SplashActivity"
+    private val LOG_TAG: String = SplashActivity::class::simpleName.toString()
 
     @Inject
-    lateinit var api: Api
+    lateinit var api: IPFSApi
 
     lateinit var progressAnimationView: LottieAnimationView
 
@@ -38,8 +37,6 @@ class SplashActivity : AppCompatActivity() {
         progressAnimationView = findViewById(R.id.progress_view)
 
         DaggerAppComponent.builder().build().inject(this)
-
-        IPFSService.start(this, IPFSService.Action.CREATE.toString())
     }
 
     override fun onResume() {
@@ -49,6 +46,8 @@ class SplashActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(ipfsReceiver, intentFilter)
 
         progressAnimationView.playAnimation()
+
+        IPFSService.start(this, IPFSService.Action.START.toString())
     }
 
     override fun onPause() {

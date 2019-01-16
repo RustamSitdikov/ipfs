@@ -26,4 +26,9 @@
 
     <string name="notification_ipfs_created">ipfs created</string>
     <string name="notification_ipfs_stopped">ipfs stopped</string>
+
+    <string name="node_info">NODE INFO</string>
+    <string name="peer_id">PEER ID</string>
+    <string name="version">VERSION</string>
+    <string name="api">API</string>
 </resources>
