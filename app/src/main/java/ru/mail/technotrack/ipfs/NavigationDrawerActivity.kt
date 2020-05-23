@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -16,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
+import ru.mail.technotrack.ipfs.fragments.UploadMenuFragment
 
 class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,9 +32,9 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         setContentView(R.layout.activity_navigation_drawer)
         setSupportActionBar(toolbar_navigation_drawer)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        fab.setOnClickListener {
+            val uploadMenuFragment = UploadMenuFragment()
+            uploadMenuFragment.show(supportFragmentManager, uploadMenuFragment.tag)
         }
 
         val toggle = ActionBarDrawerToggle(
