@@ -1,4 +1,4 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,8 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import ru.mail.technotrack.ipfs.dummy.DummyContent
-import ru.mail.technotrack.ipfs.dummy.DummyContent.DummyItem
+import retrofit2.Call
+import retrofit2.Response
+
+import ru.mail.technotrack.ipfs.viewAdapters.HomeRecyclerViewAdapter
+import ru.mail.technotrack.ipfs.R
+import ru.mail.technotrack.ipfs.api.DTO.FileInfo
+import ru.mail.technotrack.ipfs.api.DTO.FileInfoList
+import ru.mail.technotrack.ipfs.api.RetrofitClient
+
+import javax.security.auth.callback.Callback
 
 /**
  * A fragment representing a list of Items.
@@ -22,8 +30,9 @@ class HomeFragment : Fragment() {
 
     // TODO: Customize parameters
     private var columnCount = 2
-
     private var listener: OnListFragmentInteractionListener? = null
+    private var filesInfoList = ArrayList<FileInfo>()
+    private lateinit var viewAdapter: HomeRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +47,49 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home_list, container, false)
+        viewAdapter = HomeRecyclerViewAdapter(
+            filesInfoList,
+            listener,
+            container
+        )
 
-        // Set the adapter
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = when {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = HomeRecyclerViewAdapter(DummyContent.ITEMS, listener, container)
+                adapter = viewAdapter
             }
+            loadDataSet()
         }
         return view
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        if (context is OnListFragmentInteractionListener) {
-//            listener = context
-//        } else {
-//            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-//        }
     }
 
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    private fun loadDataSet() {
+        RetrofitClient.create().getFilesInfo().enqueue(object : Callback,
+            retrofit2.Callback<FileInfoList> {
+            // TODO add exception catch
+            override fun onFailure(call: Call<FileInfoList>, t: Throwable) {
+                println("LOADING FAILED")
+            }
+
+            override fun onResponse(call: Call<FileInfoList>, response: Response<FileInfoList>?) {
+                if (response != null) {
+                    response.body()?.entries?.let { filesInfoList.addAll(it) }
+                    viewAdapter.notifyDataSetChanged()
+                }
+            }
+        })
     }
 
     /**
@@ -79,7 +105,7 @@ class HomeFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: FileInfo?)
     }
 
     companion object {

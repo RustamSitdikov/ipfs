@@ -1,10 +1,11 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import com.airbnb.lottie.LottieAnimationView
+import ru.mail.technotrack.ipfs.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +46,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTimer(countDownMillis: Long) {
         if (mTimerIsRunning) {
-            mTimer = object : CountDownTimer(countDownMillis, MILLIS_PER_SECOND) {
+            mTimer = object : CountDownTimer(countDownMillis,
+                MILLIS_PER_SECOND
+            ) {
                 override fun onTick(millisUntilFinished: Long) {
 
                 }

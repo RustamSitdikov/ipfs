@@ -1,4 +1,4 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.activities
 
 import android.content.Context
 import android.content.Intent
@@ -16,16 +16,18 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_navigation_drawer.*
 import kotlinx.android.synthetic.main.app_bar_navigation_drawer.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
+import ru.mail.technotrack.ipfs.fragments.HomeFragment
+import ru.mail.technotrack.ipfs.R
 
 class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
 
     companion object {
         fun start(context: Context) {
             context.startActivity(Intent(context, NavigationDrawerActivity::class.java))
         }
     }
-
-    private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,9 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         }
 
         val toggle = ActionBarDrawerToggle(
-            this, layout_navigation_drawer, toolbar_navigation_drawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, layout_navigation_drawer, toolbar_navigation_drawer,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         layout_navigation_drawer.addDrawerListener(toggle)
         toggle.syncState()
@@ -103,8 +107,10 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
         override fun getItem(position: Int): Fragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a DashboardTabFragment (defined as a static inner class below).
-            if (position == 0) return HomeFragment()
-            else return DashboardTabFragment.newInstance(position + 1)
+            return if (position == 0) HomeFragment()
+            else DashboardTabFragment.newInstance(
+                position + 1
+            )
         }
 
         override fun getCount(): Int {
@@ -120,7 +126,10 @@ class NavigationDrawerActivity : AppCompatActivity(), NavigationView.OnNavigatio
             savedInstanceState: Bundle?
         ): View? {
             val rootView = inflater.inflate(R.layout.fragment_dashboard, container, false)
-            rootView.section_label.text = getString(R.string.section_format, arguments?.getInt(ARG_SECTION_NUMBER))
+            rootView.section_label.text = getString(
+                R.string.section_format, arguments?.getInt(
+                    ARG_SECTION_NUMBER
+                ))
             return rootView
         }
 

@@ -1,4 +1,4 @@
-package ru.mail.technotrack.ipfs
+package ru.mail.technotrack.ipfs.activities
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_bottom_navigation.*
+import ru.mail.technotrack.ipfs.R
 
 class BottomNavigationActivity : AppCompatActivity() {
 
